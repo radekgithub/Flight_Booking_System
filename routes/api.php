@@ -16,3 +16,7 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('flights/flights_api', 'FlightsController@flights_api');
+
+Route::get('flights/flight_api/{id}', 'FlightsController@flight_api');
