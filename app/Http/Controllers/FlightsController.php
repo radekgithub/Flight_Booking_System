@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Flight;
 use App\Tourist;
+use App\Http\Resources\Flight as FlightResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -19,6 +20,18 @@ class FlightsController extends Controller
         $flights = Flight::orderBy('id', 'ASC')->paginate(3);
 
         return view('flights.index')->with('flights', $flights);
+    }
+    
+    /**
+     * Return json response
+     * 
+     * @return FlightResource
+     */
+    public function flights_api()
+    {
+        $flights = Flight::orderBy('id', 'ASC')->paginate(3);
+        
+        return new FlightResource($flights);
     }
 
     /**
@@ -70,6 +83,20 @@ class FlightsController extends Controller
         */
 
         return view('flights.show')->with('flight', $flight);
+    }
+    
+    /**
+     * Return json response
+     * 
+     * @return FlightResource
+     */
+    public function flight_api($id)
+    {
+        $flight = Flight::findOrFail($id);
+        $flight->load(['tourist' => function($q) {
+            $q->orderBy('surname', 'asc');
+        }]);
+        return new FlightResource($flight);
     }
 
     /**
